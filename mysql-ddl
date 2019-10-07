@@ -1,0 +1,127 @@
+CREATE TABLE student (
+    student_id int NOT NULL,
+    user_id int NOT NULL,
+    student_fname varchar (255) NOT NULL,
+    student_lname varchar (255) NOT NULL,
+    student_level varchar (255) NOT NULL,
+    student_email varchar (255) NOT NULL,
+    student_street varchar (255) NOT NULL,
+    student_city varchar (255) NOT NULL,
+    student_province varchar (255) NOT NULL,
+    student_country varchar (255) NOT NULL,
+    PRIMARY KEY (student_id),
+    FOREIGN KEY (user_id) REFERENCES user_accounts(user_id)
+);
+
+
+CREATE TABLE tutor (
+    tutor_id int NOT NULL,
+    user_id int NOT NULL,
+    tutor_fname varchar (255) NOT NULL,
+    tutor_lname varchar (255) NOT NULL,
+    tutor_intro varchar (255) NOT NULL,
+    tutor_email varchar (255) NOT NULL,
+    tutor_street varchar (255) NOT NULL,
+    tutor_city varchar (255) NOT NULL,
+    tutor_province varchar (255) NOT NULL,
+    tutor_country varchar (255) NOT NULL,
+    PRIMARY KEY (tutor_id),
+    FOREIGN KEY (user_id) REFERENCES user_accounts(user_id)
+);
+
+
+CREATE TABLE tutor_subjects (
+    subject_id int NOT NULL,
+    tutor_id int NOT NULL,
+    subject_name varchar (255) NOT NULL,
+    PRIMARY KEY (subject_id),
+    FOREIGN KEY (tutor_id) REFERENCES tutor(tutor_id)
+);
+
+CREATE TABLE tutor_major (
+    major_id int NOT NULL,
+    tutor_id int NOT NULL,
+    major_name varchar (255) NOT NULL,
+    PRIMARY KEY (major_id),
+    FOREIGN KEY (tutor_id) REFERENCES tutor(tutor_id)
+);
+
+** This is to create the Associative Table **
+
+create table tutor_subjects_assoc ( 
+	subject_id int NOT NULL,
+	tutor_id int NOT NULL,
+	primary key(subject_id, tutor_id),
+	foreign key (subject_id) references tutor_subjects(subject_id),
+	foreign key (tutor_id) references tutor(tutor_id)
+);
+
+create table tutor_major_assoc ( 
+	major_id int NOT NULL,
+	tutor_id int NOT NULL,
+	primary key(major_id, tutor_id),
+	foreign key (major_id) references tutor_major(major_id),
+	foreign key (tutor_id) references tutor(tutor_id)
+);
+
+CREATE TABLE user_accounts (
+    user_id int NOT NULL,
+    user_uname varchar (255) NOT NULL,
+    user_password varchar (255) NOT NULL,
+    user_accesslevel int NOT NULL,
+    user_status int NOT NULL,
+    PRIMARY KEY (user_id),
+);
+
+
+CREATE TABLE student_request (
+    request_id int NOT NULL,
+    request_subject varchar (255) NOT NULL,
+    request_date date NOT NULL,
+    request_question varchar (255) NOT NULL,
+    PRIMARY KEY (request_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id)
+);
+
+
+CREATE TABLE tutor_session (
+    session_id int NOT NULL,
+    tutor_id int NOT NULL,
+    request_id int NOT NULL,
+    session_enddate date NOT NULL,
+    session_startdate date NOT NULL,
+    session_status varchar (255) NOT NULL,
+    PRIMARY KEY (session_id),
+    FOREIGN KEY (tutor_id) REFERENCES tutor(tutor_id)
+    FOREIGN KEY (request_id) REFERENCES student_request(request_id)
+);
+
+
+CREATE TABLE tutor_session (
+    session_id int NOT NULL,
+    tutor_id int NOT NULL,
+    request_id int NOT NULL,
+    session_enddate date NOT NULL,
+    session_startdate date NOT NULL,
+    session_status varchar (255) NOT NULL,
+    PRIMARY KEY (session_id),
+    FOREIGN KEY (tutor_id) REFERENCES tutor(tutor_id)
+    FOREIGN KEY (request_id) REFERENCES student_request(request_id)
+);
+
+CREATE TABLE stud_testimonial (
+    testi_id int NOT NULL,
+    session_id int NOT NULL,
+    testi_date date NOT NULL,
+    testi_comment varchar (255) NOT NULL,
+    PRIMARY KEY (testi_id),
+    FOREIGN KEY (session_id) REFERENCES tutor_session(session_id)
+);
+
+CREATE TABLE tutor_rating (
+    rating_id int NOT NULL,
+    session_id int NOT NULL,
+    rate_rate int NOT NULL,
+    PRIMARY KEY (rating_id),
+    FOREIGN KEY (session_id) REFERENCES tutor_session(session_id)
+);
